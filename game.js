@@ -127,34 +127,4 @@ function gameOverText() {
   text("Spillet er slut!", width / 2, height / 2); // Viser spillets sluttekst centralt
 }
 
-var highScore = 0; // Initialiser top score variablen
-
-document.addEventListener('DOMContentLoaded', function() {
-  // Find HTML-elementet til visning af top score
-  var topScoreElement = document.getElementById('topScore');
-
-  var genstartKnap = document.getElementById('genstartKnap');
-  genstartKnap.addEventListener('click', function() {
-    // Nulstil spilvariablerne og start et nyt spil
-    vinder = 0;
-    gameOver = false;
-    setup(); // Kald setup-funktionen for at starte et nyt spil
-  });
-});
-
-function gameOverText() {
-  fill(255, 0, 0);
-  textSize(40);
-  textAlign(CENTER, CENTER);
-  text("Spillet er slut!", width / 2, height / 2); // Viser spillets sluttekst centralt
-
-  console.log("Game Over! Current score: " + vinder + ", High score: " + highScore);
-
-  // Opdater top score, hvis den aktuelle score er højere end den eksisterende top score
-  if (vinder > highScore) {
-    highScore = vinder;
-    var topScoreElement = document.getElementById('topScore');
-    topScoreElement.innerText = "Top Score: " + highScore; // Opdaterer HTML-elementet med den nye top score
-  }
-}
 
