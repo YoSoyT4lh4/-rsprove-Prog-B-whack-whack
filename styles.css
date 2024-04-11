@@ -1,0 +1,31 @@
+body {
+    background-color: #503f04;
+    margin: 0; /*kanppens opsætning på venstre hjornet i topen */
+  }
+  
+  canvas {
+    display: block;
+    margin: 0 auto; /* centrer vores canvas */
+    border: 12px solid #7a6311; /* Tilføjer en kant rundt om lærredet*/
+  }
+
+  /* Stil for genstartsknappen */
+#genstartKnap {
+    background-color: #a63333; /* Grøn baggrundsfarve */
+    border: none; /* Ingen kantlinje */
+    color: white; /* Hvid tekstfarve */
+    padding: 5px 22px; /* Indrykning af tekst inden i knappen */
+    text-align: center; /* Tekstcentrering */
+    text-decoration: none; /* Ingen understregning på teksten */
+    display: inline-block; /* Gør knappen til et blok-element */
+    font-size: 16px; /* Tekststørrelse */
+    margin: 10px; /* Afstand rundt om knappen */
+    cursor: pointer; /* Cursor ændres til en pil for at indikere at knappen kan klikkes på */
+    border-radius: 8px; /* Afrundede hjørner på knappen */
+  }
+  
+  /* Ændrer baggrundsfarven på knappen, når der holdes musen over den */
+  #restartButton:hover {
+    background-color: #45a049; /* Mørkere grøn baggrundsfarve */
+  }
+  
