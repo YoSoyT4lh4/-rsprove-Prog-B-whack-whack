@@ -1,78 +1,110 @@
-function setup() {
-  // Ændrer canvas størrelse til 1300x700 og centrerer det på siden
-  var canvas = createCanvas(1300, 700);
-  var x = (windowWidth - width) / 2;
-  var y = (windowHeight - height) / 3;
-  canvas.position(x, y);
+var countdown; // variable for countdown 
+var countdowntid = 5000; // tid sat til 5 sekunder (5000 milisekunder)
+var vinder = 0; // antal pointsx vundet
+var moleX; // x pos for muldvarpen
+var moleY; // y pos for muldvarpen
+var bombX; // x pos for bomben
+var bombY; // y pos for bomben
+var start; // starttid for spillet
+var milliseconds = 660; // tid mellem muldvarpebevægelser man kan skru op eller ned hvis den er for nemt/svært
+var tegnmole = false; //  muldvarpen skal tegnes == false
+var molevist = false; // anden variablen om muldvarpen skal vises eller ej
+let moleimg; // billede af muldvarpen
+var gameover = false; // skal spillet sluttes
+let bombimg; // billeder af bomben
+let highestScore = 0; // highscore
 
-  start = millis(); // Gemmer starttidspunktet for spillet
+function setup() { // setup funktion
+  var canvas = createCanvas(1300, 900); // størrelsen af vores canvas
+  var x = (windowWidth - width) / 2; 
+  var y = (windowHeight - height) / 3;
+  canvas.position(x, y); // centrerer i midten af skærmen
+
+  start = millis(); // holder starttidspunktet for spillet
+
+  countdown = countdowntid; // sætter countdown til den fulde tid ved starten
+
+  // laver genstartsknap
+  var GenstartKnap = createButton('Genstart');
+  GenstartKnap.position(x + 570, y + 640 + height - 850); // knap pos
+  //GenstartKnap.position()
+  GenstartKnap.mousePressed(GenstartSpil); // hvis knapen er klikket på, kører den GenstartSpil functionen
+  GenstartKnap.id('genstartKnap'); // giver knappen en id
 }
 
-var vinder = 0; // Antal point vundet
-var moleX; // X-koordinat for muldvarpen
-var moleY; // Y-koordinat for muldvarpen
-var bombX; // X-koordinat for bomben
-var bombY; // Y-koordinat for bomben
-var start; // Starttidspunktet for spillet
-var milliseconds = 900; // Tid mellem muldvarpebevægelser
-var tegnmole = false; // Angiver om muldvarpen skal tegnes
-var moleVisning = false; // Angiver om muldvarpen skal vises eller ej
-let moleimg; // Billedet af muldvarpen
-var gameOver = false; // Angiver om spillet er slut
-let bombimg; // Billedet af bomben
 
-document.addEventListener('DOMContentLoaded', function() {
-  var genstartKnap = document.getElementById('genstartKnap');
-  genstartKnap.addEventListener('click', function() {
-    // Nulstil spilvariablerne og start et nyt spil
-    vinder = 0;
-    gameOver = false;
-    setup(); // Kald setup-funktionen for at starte et nyt spil
-  });
-});
+
+
+function GenstartSpil() { // hvis GenstartSpil funktionen bliver kaldt skal den:
+  //reset disse variabler
+  vinder = 0;
+  gameover = false;
+  setup(); // kalder setup funktionen for at starte et nyt spil
+}
 
 function preload(){
-  moleimg = loadImage("mole.png"); // Indlæser billedet af muldvarpen
-  bombimg = loadImage("bomb.png"); // Indlæser billedet af bomben
+  moleimg = loadImage("mole.png"); // load billedet af muldvarpen
+  bombimg = loadImage("bomb.png"); // load billedet af bomben
 }
 
 function mouseClicked() {
-  if (!gameOver) {
-    var distanceToMole = int(dist(mouseX, mouseY, moleX, moleY));
+  if (!gameover) { // hvis gameover er false
+    var distanceToMole = int(dist(mouseX, mouseY, moleX, moleY)); // finder afstanden mellem molen, og og vores mus
     var distanceToBomb = int(dist(mouseX, mouseY, bombX, bombY));
     
     if (distanceToMole <= 50) {
       console.log("Muldvarp blev klikket!");
-      vinder++; // Øger antallet af point
-      if (vinder > highScore) {
-        highScore = vinder; // Opdaterer højeste score
+      vinder++; //  antallet af point stiger
+      if (vinder > highestScore) {
+        highestScore = vinder; // ny højeste score
       }
-    } else if (distanceToBomb <= 30) { // Justerer radius i forhold til bombestørrelse
+      countdown = countdowntid; // ny countdown ved at klikke på muldvarpen
+    } else if (distanceToBomb <= 30) { 
       console.log("Bomben blev klikket! Spillet er slut!");
-      gameOver = true; // Angiver at spillet er slut
+      gameover = true; // gameover og at spillet er slut
     }
   }
 }
 
-function draw() {
-  background(100, 100, 10); // Baggrundsfarve
+function draw() { 
+  background(160, 80, 51); // Baggrundsfarve
 
   // Titel
   fill(0);
-  textSize(50);
-  text("Whack a mole!", width / 2 - 150, 50); // Centreret titel
+  textSize(20);
+  text("Whack a mole!", width / 2 - 1, 50); //  titel og position
+
+  fill(0)
+  text("Bedste Score: " + highestScore, 100, 30); // Viser den højeste score
+
+
+  // Tjekker om det er tid til at tælle ned
+  if (!gameover && countdown > 0) {
+    countdown -= deltaTime; // .
+
+    // Viser countdown tiden
+    textSize(20);
+    fill(255);
+    textAlign(CENTER);
+    text("Tid tilbage: " + (countdown / 1000).toFixed(1), width / 2.1, height - 60); //plasering af vores tid tilbage tekst
+
+    // tjekker om tiden er udløbet
+    if (countdown <= 0) {
+      gameover = true; // spillet er slut
+    }
+  }
 
   // Huller
   fill(100,42,42);
-  var holeSize = 60; // Størrelse på hullerne
-  var moleSize = 90; // Mindsket størrelse af muldvarpen
-  var moleOffsetX = 10; // Justerer muldvarpens X-offset (til venstre)
-  var moleOffsetY = 20; // Justerer muldvarpens Y-offset mod midten af hullet
+  var holestr = 60; // Størrelse på hullerne
+  var molestr = 90; //  størrelse af muldvarpen
+  var molepos = 10; // position(til venstre)
+  var molepos2 = 20; // position midten af hullet
 
   // Tegner hullerne
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
-      rect(width / 2 - 150 + j * 100 - moleOffsetX, height / 2 - 100 + i * 100 - moleOffsetY, holeSize, holeSize);
+  for (let i = 0; i < 3; i++) { // for loop/ løkke der går gennem rækkerne af rektangler (3 rækker). ved at lave en condition at i < 3
+    for (let j = 0; j < 3; j++) {  // her har vi det samme, og j kørere så længe j er mindre end 3, altså den kører 3 gange for hver kolonne af rektangler
+      rect(width / 2 - 150 + j * 100 - molepos, height / 2 - 100 + i * 100 - molepos2, holestr, holestr); // for hvert loop beregnes positionen
     }
   }
 
@@ -81,50 +113,47 @@ function draw() {
   text("Point:", width / 2 - 50, height / 2 + 200);
   text(vinder, width / 2 + 20, height / 2 + 200);
 
-  // Tjekker om det er tid til muldvarpens bevægelse
+  // tjekker om det er tid til muldvarpens bevægelse
   if (millis() - start > milliseconds) {
-    moveMole(); // Kalder moveMole-funktionen for at flytte muldvarpen
-    start = millis(); // Opdaterer starttidspunktet
+    moveMole(); // Kalder movemole funktionen for at flytte muldvarpen
+    start = millis(); // ny starttidspunktet
   }
 
-  // Tegner muldvarpen kun hvis moleVisning er sand
-  if (moleVisning) {
+  if (molevist) { // hvis molevist er trur
     // Tegner billedet af muldvarpen med justeringer for centrering og størrelse
-    image(moleimg, moleX - moleSize / 2, moleY - moleSize / 2, moleSize, moleSize);
+    image(moleimg, moleX - molestr / 2, moleY - molestr / 2, molestr, molestr);
   }
   
-  // Tegner bomben
+  // tegner bomben
   image(bombimg, bombX - 30, bombY - 30, 60, 60);
 
   // Tjekker om spillet er slut og viser spillets sluttekst
-  if (gameOver) {
-    gameOverText();
+  if (gameover) {
+    gameoverText();
   }
 }
 
 function moveMole() {
-  var possibleX = [width/2 - 135, width/2 - 35, width/2 + 65]; // Centrerede mulige X-koordinater
-  var possibleY = [height/2 - 85, height/2 + 15, height/2 + 115]; // Centrerede mulige Y-koordinater
+  var possibleX = [width/2 - 135, width/2 - 35, width/2 + 65]; // 
+  var possibleY = [height/2 - 85, height/2 + 15, height/2 + 115]; // 
 
-  // Tildeler tilfældigt muldvarpens position
+  // random og tilfældigt  position af muldvarpens
   moleX = random(possibleX);
   moleY = random(possibleY);
 
-  // Tildeler tilfældigt bombens position, og sikrer at den ikke er i samme felt som muldvarpen
+  // tilfældigt bombens position men er ikke det samme felt som muldvarpen
   do {
     bombX = random(possibleX);
     bombY = random(possibleY);
   } while (bombX === moleX && bombY === moleY);
 
-  // Tilfældigt sætter moleVisning til sand eller falsk for at skabe perioder med stilhed
-  moleVisning = random() > 0.2; // Juster tærsklen efter behov
+  
+  molevist = random() > 0.2; // Juster tærsklen efter behov
 }
 
-function gameOverText() {
+function gameoverText() {
   fill(255, 0, 0);
-  textSize(40);
+  textSize(45);
   textAlign(CENTER, CENTER);
-  text("Spillet er slut!", width / 2, height / 2); // Viser spillets sluttekst centralt
+  text("Spillet er slut!", width / 2, height / 2); //  viser gameover teksten
 }
-
-
