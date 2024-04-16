@@ -15,7 +15,7 @@ let bombimg; // billeder af bomben
 let highestScore = 0; // highscore
 
 function setup() { // setup funktion
-  var canvas = createCanvas(1300, 900); // størrelsen af vores canvas
+  var canvas = createCanvas(1300, 600); // størrelsen af vores canvas
   var x = (windowWidth - width) / 2; 
   var y = (windowHeight - height) / 3;
   canvas.position(x, y); // centrerer i midten af skærmen
@@ -26,7 +26,7 @@ function setup() { // setup funktion
 
   // laver genstartsknap
   var GenstartKnap = createButton('Genstart');
-  GenstartKnap.position(x + 570, y + 640 + height - 850); // knap pos
+  GenstartKnap.position(x + 570, y + 890 + height - 850); // knap pos
   //GenstartKnap.position()
   GenstartKnap.mousePressed(GenstartSpil); // hvis knapen er klikket på, kører den GenstartSpil functionen
   GenstartKnap.id('genstartKnap'); // giver knappen en id
